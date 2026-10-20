@@ -1,0 +1,15 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SplitPay Agent on Celo</title>
+<style>body{font-family:system-ui;max-width:720px;margin:40px auto;padding:0 16px;background:#fffef0}input,button{font-size:16px;padding:6px;margin:4px 0}table{border-collapse:collapse}td,th{border:1px solid #ccc;padding:4px 10px}code{background:#eee;padding:1px 4px}</style></head>
+<body><h1>SplitPay Agent <small>on Celo</small></h1>
+<p>A pay-per-call agent: send it a bill and the people sharing it, it returns exact per-person amounts (no lost cents). Each call costs <b>0.01 USD₮</b> via <a href="https://x402.celo.org">x402</a>. The payment goes to an on-chain <code>RevenueSplitter</code> that forwards revenue to its payees by fixed shares.</p>
+<h3>Try the split logic (free preview, runs locally)</h3>
+<p>Total <input id="t" value="100" size="8"> &nbsp; Weights (name:weight, comma separated)<br><input id="w" value="ana:2,beto:1,caro:1" size="40"> <button onclick="go()">Split</button></p>
+<table id="o"></table>
+<h3>Paid API</h3><pre>GET /split?total=100&shares=[{"who":"ana","weight":2},...]
+→ 402 Payment Required (x402, USD₮ on Celo, payTo = RevenueSplitter)
+→ retry with X-PAYMENT → 200 + per-person amounts</pre>
+<p><a href="agent.json">ERC-8004 registration file</a> · <a href="https://github.com/jackzhu88/splitpay-agent-celo">Source</a></p>
+<script>
+function split(total,s){const sum=s.reduce((a,x)=>a+x.weight,0);let used=0;const r=s.map(x=>{const raw=total*x.weight/sum,f=Math.floor(raw*100)/100;used+=f;return{...x,amount:f,rem:raw-f}});let left=Math.round((total-used)*100);[...r].sort((a,b)=>b.rem-a.rem).forEach(x=>{if(left-->0)x.amount=+(x.amount+.01).toFixed(2)});return r}
+function go(){const s=document.getElementById('w').value.split(',').map(p=>{const[w,n]=p.split(':');return{who:w.trim(),weight:+n}});const r=split(+document.getElementById('t').value,s);document.getElementById('o').innerHTML='<tr><th>Who</th><th>Pays</th></tr>'+r.map(x=>`<tr><td>${x.who}</td><td>${x.amount.toFixed(2)}</td></tr>`).join('')}go()
+</script></body></html>

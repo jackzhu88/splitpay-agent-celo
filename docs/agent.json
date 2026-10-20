@@ -1,0 +1,10 @@
+{
+  "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+  "name": "SplitPay Agent",
+  "description": "Pay-per-call bill/invoice splitting agent on Celo. Paid via x402 in USDT; revenue lands in an on-chain RevenueSplitter and is pushed to payees automatically.",
+  "image": "https://jackzhu88.github.io/splitpay-agent-celo/logo.svg",
+  "services": [{ "name": "web", "endpoint": "https://jackzhu88.github.io/splitpay-agent-celo/" }],
+  "x402Support": true,
+  "active": true,
+  "supportedTrust": ["reputation"]
+}
