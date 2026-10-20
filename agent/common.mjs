@@ -7,7 +7,7 @@ import fs from 'node:fs';
 export const NET = process.env.NET === 'sepolia' ? celoSepolia : celo;
 // Celo fee-currency adapters (gas paid in stablecoin, no CELO needed)
 export const FEE = { USDC: '0x2F25deB3848C207fc8E0c34035B3Ba7fC157602B', USDT: '0x0e2a3e05bc9a16f5292a6170456a710cb89c6f72' };
-export const TOKENS = { USDC: '0xcebA9300f2b948710d2653dD7B07f33A8B32118C', USDT: '0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e' };
+export const TOKENS = { USDC: '0xcebA9300f2b948710d2653dD7B07f33A8B32118C', USDT: '0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e', USAT: '0xD2ab3C9A02DBBAB236BfEC45D1d755DF4267F771' };
 export const feeCurrency = process.env.FEE_TOKEN ? FEE[process.env.FEE_TOKEN] : undefined;
 
 // ERC-8021 attribution via the official SDK. Assigned hackathon code + repo-derived code.
