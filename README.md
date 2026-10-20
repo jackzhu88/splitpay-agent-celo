@@ -9,6 +9,15 @@ An autonomous, pay-per-call agent built on Celo's open rails for the **Agents on
 - **Attribution:** every tx the agent sends appends the **ERC-8021** attribution tag (`agent/common.mjs`).
 - **Gas in stablecoins:** txs set `feeCurrency` to the USDC/USDT adapter, so the agent never needs CELO.
 
+## Live on Celo mainnet (42220)
+| Item | Value |
+| --- | --- |
+| Agent wallet | [`0xde9f6B273C9F2A041D90c0ee1545C4C1e2618676`](https://celoscan.io/address/0xde9f6B273C9F2A041D90c0ee1545C4C1e2618676) |
+| RevenueSplitter (50/50) | [`0x7ea042eb2d0a7e18ab94e11429ef31bd1e2e4175`](https://celoscan.io/address/0x7ea042eb2d0a7e18ab94e11429ef31bd1e2e4175) · [deploy tx](https://celoscan.io/tx/0x907bbcd101bd0336df39576c43555c06f5c0ba01b5b2e41726e43338b77360ea) |
+| ERC-8004 agent | ID **9982** on [Identity Registry](https://celoscan.io/address/0x8004A169FB4a3325136EB29fA0ceB6D2e539a432) · [register tx](https://celoscan.io/tx/0x5b127c41327c2ed13b381b9bf343313c33bc94268acb8590ff6f05ed014610b9) · [8004scan](https://8004scan.io) |
+| Attribution (ERC-8021) | `celo_759bf11d2efc` (assigned) + `celo_1bb6c8ec6047` (repo-derived), via `@celo/attribution-tags` |
+| Gas | paid in USDC via fee abstraction (tx type 123) |
+
 ## Layout
 | Path | What |
 | --- | --- |
