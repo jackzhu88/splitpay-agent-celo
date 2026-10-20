@@ -1,0 +1,10 @@
+{
+  "chainId": 42220,
+  "agentWallet": "0xde9f6B273C9F2A041D90c0ee1545C4C1e2618676",
+  "revenueSplitter": "0x7ea042eb2d0a7e18ab94e11429ef31bd1e2e4175",
+  "payees": [["0xde9f6B273C9F2A041D90c0ee1545C4C1e2618676", 5000], ["0xe85620ce560cbc634c7c04c33179e2caf052ad35", 5000]],
+  "deployTx": "0x907bbcd101bd0336df39576c43555c06f5c0ba01b5b2e41726e43338b77360ea",
+  "erc8004": { "registry": "0x8004A169FB4a3325136EB29fA0ceB6D2e539a432", "agentId": 9982, "tx": "0x5b127c41327c2ed13b381b9bf343313c33bc94268acb8590ff6f05ed014610b9" },
+  "attributionCodes": ["celo_759bf11d2efc", "celo_1bb6c8ec6047"],
+  "feeCurrency": "USDC adapter 0x2F25deB3848C207fc8E0c34035B3Ba7fC157602B"
+}
