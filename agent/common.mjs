@@ -1,5 +1,5 @@
 // Shared Celo client: fee abstraction (gas paid in USDC/USDT) + ERC-8021 attribution tag.
-import { createPublicClient, createWalletClient, http, toHex, concat, stringToHex } from 'viem';
+import { createPublicClient, createWalletClient, http, } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { celo, celoSepolia } from 'viem/chains';
 import fs from 'node:fs';
@@ -10,11 +10,12 @@ export const FEE = { USDC: '0x2F25deB3848C207fc8E0c34035B3Ba7fC157602B', USDT: '
 export const TOKENS = { USDC: '0xcebA9300f2b948710d2653dD7B07f33A8B32118C', USDT: '0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e' };
 export const feeCurrency = process.env.FEE_TOKEN ? FEE[process.env.FEE_TOKEN] : undefined;
 
-// ERC-8021 schema-0 suffix: codes || codesLength || schemaId(0x00) || 16-byte marker
+// ERC-8021 attribution via the official SDK. Assigned hackathon code + repo-derived code.
+import { toDataSuffix, codeFromRepo } from '@celo/attribution-tags';
+export const REPO_CODE = codeFromRepo('jackzhu88/splitpay-agent-celo');
 export function attributionSuffix(code) {
   if (!code) throw new Error('set ATTRIBUTION_TAG (issued by Loops House on enrollment)');
-  const codes = stringToHex(code);
-  return concat([codes, toHex((codes.length - 2) / 2, { size: 1 }), '0x00', '0x80218021802180218021802180218021']);
+  return toDataSuffix(code === REPO_CODE ? [code] : [code, REPO_CODE]);
 }
 
 export function clients() {
