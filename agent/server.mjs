@@ -1,4 +1,4 @@
-// x402 seller: a paid "invoice split" API. Price per call in USDT on Celo; payTo = RevenueSplitter,
+// x402 seller: a paid "invoice split" API. Price per call 0.001 USA₮ / USD₮ / USDC on Celo; payTo = RevenueSplitter,
 // so every settlement is shared on-chain with the payees fixed in the contract.
 import http from 'node:http'; import { TOKENS } from './common.mjs';
 const PAY_TO = process.env.PAY_TO;                      // RevenueSplitter address
@@ -6,7 +6,15 @@ const FACILITATOR = process.env.FACILITATOR || 'https://api.x402.celo.org';
 const API_KEY = process.env.X402_API_KEY;               // seller key from x402.celo.org
 const PRICE = process.env.PRICE || '1000';              // 0.001 USDC (6 decimals)
 // x402 v2 (what api.x402.celo.org/supported advertises): CAIP-2 network, USDC via EIP-3009.
-const reqs = () => ({ scheme: 'exact', network: 'eip155:42220', amount: PRICE, payTo: PAY_TO, maxTimeoutSeconds: 120, asset: TOKENS.USDC, extra: { name: 'USDC', version: '2', assetTransferMethod: 'eip3009' } });
+// Accept USA₮ (listed first: US-regulated dollar for US-based payers), USD₮ and USDC — all EIP-3009 on Celo mainnet.
+const ASSETS = [
+  { asset: '0xD2ab3C9A02DBBAB236BfEC45D1d755DF4267F771', name: 'Tether America USD', version: '1' }, // USA₮
+  { asset: TOKENS.USDT, name: 'Tether USD', version: '1' },                                      // USD₮
+  { asset: TOKENS.USDC, name: 'USDC', version: '2' },                                            // USDC
+];
+const ALL = () => ASSETS.map(a => ({ scheme: 'exact', network: 'eip155:42220', amount: PRICE, payTo: PAY_TO, maxTimeoutSeconds: 120, asset: a.asset, extra: { name: a.name, version: a.version, assetTransferMethod: 'eip3009' } }));
+// Pick the requirement matching the asset the buyer actually signed for.
+const pick = (pp) => { const want = (pp?.accepted?.asset || pp?.paymentRequirements?.asset || '').toLowerCase(); return ALL().find(r => r.asset.toLowerCase() === want); };
 const resource = (url) => ({ url, description: 'Split an invoice/bill into exact per-person stablecoin amounts', mimeType: 'application/json' });
 async function fac(path, body) {
   const r = await fetch(FACILITATOR + path, { method: 'POST', headers: { 'content-type': 'application/json', ...(API_KEY && { 'x-api-key': API_KEY }) }, body: JSON.stringify(body) });
@@ -23,15 +31,15 @@ export function split(total, shares) {
 http.createServer(async (req, res) => {
   const proto = req.headers['x-forwarded-proto'] || 'http';
   const url = proto + '://' + req.headers.host + req.url;
-  if (req.url === '/' || req.url === '/health') { res.writeHead(200, { 'content-type': 'application/json' }).end(JSON.stringify({ service: 'SplitPay Agent (x402 on Celo)', endpoint: '/split?total=100&shares=[{"name":"a","weight":1},{"name":"b","weight":1}]', price: PRICE + ' micro-USDC', payTo: PAY_TO, agentId: 9982 })); return; }
+  if (req.url === '/' || req.url === '/health') { res.writeHead(200, { 'content-type': 'application/json' }).end(JSON.stringify({ service: 'SplitPay Agent (x402 on Celo)', endpoint: '/split?total=100&shares=[{"name":"a","weight":1},{"name":"b","weight":1}]', price: '0.001', assets: ['USAT','USDT','USDC'], payTo: PAY_TO, agentId: 9982 })); return; }
   if (!req.url.startsWith('/split')) { res.writeHead(404).end(); return; }
   const header = req.headers['payment-signature'] || req.headers['x-payment'];
-  const r = reqs();
-  if (!header) {
-    const pr = { x402Version: 2, error: 'Payment required', resource: resource(url), accepts: [r] };
+    if (!header) {
+    const pr = { x402Version: 2, error: 'Payment required', resource: resource(url), accepts: ALL() };
     res.writeHead(402, { 'content-type': 'application/json', 'payment-required': Buffer.from(JSON.stringify(pr)).toString('base64') }).end(JSON.stringify(pr)); return;
   }
   let paymentPayload; try { paymentPayload = JSON.parse(Buffer.from(header, 'base64').toString()); } catch { res.writeHead(400).end('bad payment header'); return; }
+  const r = pick(paymentPayload); if (!r) { res.writeHead(402).end(JSON.stringify({ error: 'unsupported asset' })); return; }
   const v = await fac('/verify', { x402Version: 2, paymentPayload, paymentRequirements: r });
   if (!v.isValid) { res.writeHead(402).end(JSON.stringify({ error: v.invalidReason })); return; }
   const q = new URL(url).searchParams;
