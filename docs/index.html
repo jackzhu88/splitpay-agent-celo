@@ -8,6 +8,7 @@
 <h3>Paid API</h3><pre>GET /split?total=100&shares=[{"who":"ana","weight":2},...]
 → 402 Payment Required (x402, USD₮ on Celo, payTo = RevenueSplitter)
 → retry with X-PAYMENT → 200 + per-person amounts</pre>
+<p><b>Mainnet:</b> RevenueSplitter <a href="https://celoscan.io/address/0x7ea042eb2d0a7e18ab94e11429ef31bd1e2e4175">0x7ea0…4175</a> · ERC-8004 agent <a href="https://celoscan.io/tx/0x5b127c41327c2ed13b381b9bf343313c33bc94268acb8590ff6f05ed014610b9">#9982</a></p>
 <p><a href="agent.json">ERC-8004 registration file</a> · <a href="https://github.com/jackzhu88/splitpay-agent-celo">Source</a></p>
 <script>
 function split(total,s){const sum=s.reduce((a,x)=>a+x.weight,0);let used=0;const r=s.map(x=>{const raw=total*x.weight/sum,f=Math.floor(raw*100)/100;used+=f;return{...x,amount:f,rem:raw-f}});let left=Math.round((total-used)*100);[...r].sort((a,b)=>b.rem-a.rem).forEach(x=>{if(left-->0)x.amount=+(x.amount+.01).toFixed(2)});return r}
