@@ -19,7 +19,7 @@ An autonomous, pay-per-call agent built on Celo's open rails for the **Agents on
 | Gas | paid in USDC via fee abstraction (tx type 123) |
 
 ## Why USA₮
-USA₮ is Tether's US-regulated dollar token. Groups splitting bills in the US can pay with a regulated dollar, while USD₮ and USDC holders elsewhere use the same endpoint and contract, with no conversion step.
+Tether's US dollar token USA₮ is listed first because it is the token this track is built around. USD₮ and USDC holders use the same endpoint and contract, with no conversion step.
 
 ## Layout
 | Path | What |

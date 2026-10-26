@@ -6,7 +6,7 @@ const FACILITATOR = process.env.FACILITATOR || 'https://api.x402.celo.org';
 const API_KEY = process.env.X402_API_KEY;               // seller key from x402.celo.org
 const PRICE = process.env.PRICE || '1000';              // 0.001 USDC (6 decimals)
 // x402 v2 (what api.x402.celo.org/supported advertises): CAIP-2 network, USDC via EIP-3009.
-// Accept USA₮ (listed first: US-regulated dollar for US-based payers), USD₮ and USDC — all EIP-3009 on Celo mainnet.
+// Accept USA₮ (listed first: Tether's US dollar token USA₮, the token this track is built around), USD₮ and USDC — all EIP-3009 on Celo mainnet.
 const ASSETS = [
   { asset: '0xD2ab3C9A02DBBAB236BfEC45D1d755DF4267F771', name: 'Tether America USD', version: '1' }, // USA₮
   { asset: TOKENS.USDT, name: 'Tether USD', version: '1' },                                      // USD₮
